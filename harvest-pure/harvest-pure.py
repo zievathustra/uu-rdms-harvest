@@ -51,8 +51,10 @@ try:
     num_records = config['RUN_PARAMS']['RUN_NUM_RECORDS']
     num_runs = config['RUN_PARAMS']['RUN_NUM_RUNS']
     resume = eval(config['RUN_PARAMS']['RUN_RESUME'])
+    backupSave = eval(config['RUN_PARAMS']['RUN_BACKUP'])
     num_logLine = 0 # Enumerate log lines for sorting purposes
     path_output = config['PATH_PARAMS_HARVEST']['PATH_OUTPUT'] + "/" + config['PURE_PARAMS']['PURE_API_VERSION'] + "/" + config['PURE_PARAMS']['PURE_SYSTEM']
+    path_output_backup = config['PATH_PARAMS_HARVEST']['PATH_OUTPUT_BACKUP'] + "/" + config['PURE_PARAMS']['PURE_API_VERSION'] + "/" + config['PURE_PARAMS']['PURE_SYSTEM']
     path_log = config['PATH_PARAMS_HARVEST']['PATH_LOG'] + "/" + config['PURE_PARAMS']['PURE_API_VERSION'] + "/" + config['PURE_PARAMS']['PURE_SYSTEM']
     rendering = config['WS_PARAMS']['WS_RENDERING']
     fields = config['WS_PARAMS']['WS_FIELDS']
@@ -320,6 +322,8 @@ def harvest_endpoint(site, endpoint, total):
                 print(str(num_logLine) + "," + str(num_records) + "," + str(run_times) + "," + str(total_remainder)+ "," + endpoint + ",Start save page to disk" + "," + str(datetime.datetime.now()))
                 #save_file(response, path_output, "{0}_{1}_{2}".format("{:%Y%m%d}".format(datetime.datetime.now()),endpoint.replace('/', '-'), "{0:0>6}".format(start_offset)), fileType)
                 save_file(False, response, path_output + "/" + endpoint.replace('/', '-'), "{0}_{1}_{2}".format("{:%Y%m%d}".format(datetime.datetime.now()),endpoint.replace('/', '-'), "{0:0>6}".format(start_offset)), fileType)
+                if backupSave:
+                    save_file(False, response, path_output_backup + "/" + endpoint.replace('/', '-'), "{0}_{1}_{2}".format("{:%Y%m%d}".format(datetime.datetime.now()),endpoint.replace('/', '-'), "{0:0>6}".format(start_offset)), fileType)
                 num_logLine += 1
                 print(str(num_logLine) + "," + str(num_records) + "," + str(run_times) + "," + str(total_remainder)+ "," + endpoint + ",End save page to disk" + "," + str(datetime.datetime.now()))
 
