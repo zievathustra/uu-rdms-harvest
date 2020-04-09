@@ -63,6 +63,7 @@ try:
     # Save files yes/no, assign variables for proper saving
     save = blnSave
     path_output = path_output + "/" + str(run_method) + "/" + fileType
+    path_output_backup = path_output_backup + "/" + str(run_method) + "/" + fileType
     if not os.path.exists(path_output):
         os.makedirs(path_output)
     path_log = path_log + "/" + str(run_method) + "/" + fileType + "/logs"
