@@ -1,9 +1,10 @@
 # Harvest Pure using Python
+Please note that links will NOT open in a new tab or window, so please use right-mouse-click and the appropriate action to open. This is due to limitations to GitHubs markdown implementation (no support for ``{:target="_blank"}``). And my sticking to readability of my own markdown input in Atom a.o.t. replacing all links with ``<a></a>`` tags, to be frank.
 
 ## Credits
 Thanks to Elsevier for providing a code example. The link to the page in the Pure Client Space broke some time ago, so I included the example script in this repository.
 
-Thank you, [Richard van Hoek](https://www.uu.nl/staff/RvanHoek/?target=_blank), for doing the legwork on setting up python correctly and having a first go at the Elsevier example.
+Thank you, [Richard van Hoek](https://www.uu.nl/staff/RvanHoek), for doing the legwork on setting up python correctly and having a first go at the Elsevier example.
 
 ## References
 General information on Pure web services:
@@ -149,3 +150,8 @@ Therefore, considering the parameter examples listed above, the full filepath of
 
 ## Scheduling the script
 [TODO]
+
+## Disclaimer
+I'm no python guru...so I started with basic knowledge, I searched the net and where I hit a wall I tried and failed until I got it working again, step by step. Please allow for code that won't win awards and feel free to share your suggestions for improvement.
+
+You're welcome to find me at [Utrecht University](https://www.uu.nl/staff/JASieverink) or at [LinkedIn](https://www.linkedin.com/in/arjansieverink).
