@@ -3,7 +3,7 @@
 ## Credits
 Thanks to Elsevier for providing a code example. The link to the page in the Pure Client Space broke some time ago, so I included the example script in this repository.
 
-Thank you, [Richard van Hoek](https://www.uu.nl/staff/RvanHoek), for doing the legwork on setting up python correctly and having a first go at the Elsevier example.
+Thank you, [Richard van Hoek](https://www.uu.nl/staff/RvanHoek/?target=_blank), for doing the legwork on setting up python correctly and having a first go at the Elsevier example.
 
 ## References
 General information on Pure web services:
@@ -39,99 +39,99 @@ The python code harvests ALL records of a given content type. Ideally, processin
 Elsevier has developed a basic script to harvest Pure. It is designed to harvest multiple endpoints and write the output to file. Please note that a single request will result in saving a corresponding, single file. Moreover, not all endpoints are included in the example and only basic content parameters are listed. A more comprehensive study of the API documentation should open up the full potential of the script.
 
 ### Put to work
-lsevier's example script failed to loop due to a case sensitivity issue (xml parameter 'navigationLink' should read 'navigationlink') that was hard to spot but easy to fix.
+Elsevier's example script failed to loop due to a case sensitivity issue (xml parameter 'navigationLink' should read 'navigationlink') that was hard to spot but easy to fix.
 
 Meanwhile, the script has changed dramatically. Core functions have remained intact, obviously, but some features were added, extended or modified. A short list:
-1. Added logging of print statements to file for analysis in MS Excel.
+1. Added logging of print statements to file for analysis.
 2. Added code to enable running tests while varying webservice request sizes.
 3. Added code to enable running tests with limited sets of data.
 4. Added configuration file with parameters.
 5. Added code and configuration parameters for output to json.
 6. Added code and configuration parameters for looping through full set of records using a counter instead of the navigationlink property for (dramatic) performance enhancement.
-7. Added code to save text files to mark start and end of running the script so it is clear to BI bods that the script has run a full cycle for a content type.
+7. Added code to save text files to mark start and end of running the script so it is clear to whomever uses the files that the script has run a full cycle for a content type.
 
 ### Parameter configuration
 The harvest script uses a configuration file with parameters for ease of testing and deployment. The name of the configuration file is hardcoded and shoud read **harvest-pure.cfg**. Parameters are divided into four groups as shown below.
 
 #### Pure [PURE_PARAMS]
-````python
+````json
 PURE_API_VERSION = ws/api/<version>
 
 Example: PURE_API_VERSION = ws/api/517
 ````
-````python
+````json
 PURE_API_KEY = <api key, see Pure admin section>
 ````
-````python
+````json
 PURE_URI = https://<yourPure>
 ````
-````python
+````json
 PURE_SYSTEM = <text, e.g. Staging, Production>
 
 Example: PURE_SYSTEM = Staging
 ````
 #### Webservice [WS_PARAMS]
-````python
+````json
 WS_OUTPUT = application/<outputType>
 
 Example: WS_OUTPUT = application/json
 ````
-````python
+````json
 WS_FILETYPE = <filenameExtension>
 
 Example: WS_FILETYPE = json
 ````
-````python
+````json
 WS_RENDERING = <rendering1>,<rendering2>...,<rendering.>
 
 Example: WS_RENDERING = apa,harvard,mla
 ````
-````python
+````json
 WS_FIELDS = <field1>,<field2>...,<field.> or * for all fields
 
 Example: WS_FIELDS = *
 ````
 
 #### Run mode [RUN_PARAMS]
-````python
+````json
 RUN_METHOD = <0 = use navigationlink to next record set as returned by webservice call (performance hit), 1 = use counter of total number of records per site as returned by first webservice call>
 
 Example: RUN_METHOD = 0
 ````
-````python
+````json
 RUN_BLNSAVE = <True = save file to disk, False = do not save file>
 
 Example: RUN_BLNSAVE = True
 ````
-````python
+````json
 RUN_NUM_RECORDS = <n, number of records to retrieve per webservice request, use smaller numbers when testing>
 
 Example: RUN_NUM_RECORDS = 500
 ````
-````python
+````json
 RUN_NUM_RUNS = <number of consecutive webservice calls, 0 = loop through full record set, > 0 when testing>
 
 Example: RUN_NUM_RUNS = 5
 ````
-````python
+````json
 RUN_RESUME = <False = Start from scratch, anything before last download offset may be outdated, True = Continue from the last downloaded offset>
 
 Example: RUN_RESUME = False
 ````
-````python
+````json
 RUN_BACKUP = <True = save file as copy to [PATH_OUTPUT_BACKUP], False = no extra save>
 
 Example: RUN_BACKUP = True
 ````
 
 #### Paths [PATH_PARAMS_HARVEST]
-````python
+````json
 Example: PATH_OUTPUT = /home/harvest-pure/data
 ````
-````python
+````json
 Example: PATH_OUTPUT_BACKUP = /home/harvest-pure/backup
 ````
-````python
+````json
 Example: PATH_LOG = /home/harvest-pure/logs
 ````
 The parameters listed here are base paths. At runtime they will be filled out with
