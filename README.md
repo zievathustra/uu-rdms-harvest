@@ -13,7 +13,7 @@ General information on Pure web services:
 ## Python setup
 
 ### Python download location
-Download **Python 3.7.* or up** for your preferred OS from the [python.org website](https://www.python.org/downloads/).
+Download **Python 3.7.x or up** for your preferred OS from the [python.org website](https://www.python.org/downloads/).
 
 ### Python packages
 Make sure you have these packages installed, too:
