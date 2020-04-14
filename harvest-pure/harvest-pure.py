@@ -46,8 +46,8 @@ try:
     api_version = config['PURE_PARAMS']['PURE_API_VERSION']
     output = config['WS_PARAMS']['WS_OUTPUT']
     fileType = config['WS_PARAMS']['WS_FILETYPE']
-    blnSave = eval(config['WS_PARAMS']['WS_BLNSAVE'])
     run_method = config['RUN_PARAMS']['RUN_METHOD']
+    blnSave = eval(config['RUN_PARAMS']['RUN_BLNSAVE'])
     num_records = config['RUN_PARAMS']['RUN_NUM_RECORDS']
     num_runs = config['RUN_PARAMS']['RUN_NUM_RUNS']
     resume = eval(config['RUN_PARAMS']['RUN_RESUME'])
