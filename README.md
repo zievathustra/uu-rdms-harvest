@@ -1,5 +1,5 @@
 # Harvest Pure using Python
-Please note that links will NOT open in a new tab or window, so please use right-mouse-click and the appropriate action to open. This is due to limitations to GitHubs markdown implementation (no support for ``{:target="_blank"}``). And my sticking to readability of my own markdown input in Atom a.o.t. replacing all links with ``<a></a>`` tags, to be frank.
+Please note that links will NOT open in a new tab or window, so please use right-mouse-click and the appropriate action to open. This is due to limitations to GitHubs markdown implementation (no support for ``{:target="_blank"}``). And my sticking to readability of my own markdown input in Atom as opposed to replacing all links with ``<a></a>`` tags, to be frank.
 
 ## Credits
 Thanks to Elsevier for providing a code example. The link to the page in the Pure Client Space broke some time ago, so I included the example script in this repository.
@@ -125,7 +125,7 @@ RUN_BACKUP = <True = save file as copy to [PATH_OUTPUT_BACKUP], False = no extra
 Example: RUN_BACKUP = True
 ````
 
-#### Paths [PATH_PARAMS_HARVEST]
+#### Paths [PATH_PARAMS_HARVEST, Linux version]
 ````json
 Example: PATH_OUTPUT = /home/harvest-pure/data
 ````
