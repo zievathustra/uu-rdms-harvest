@@ -17,6 +17,7 @@ import sys
 import configparser
 import datetime
 import fnmatch
+import shutil
 # *Logging
 import traceback
 import logging
@@ -48,25 +49,35 @@ try:
     fileType = config['WS_PARAMS']['WS_FILETYPE']
     run_method = config['RUN_PARAMS']['RUN_METHOD']
     blnSave = eval(config['RUN_PARAMS']['RUN_BLNSAVE'])
+    blnOverridePath = eval(config['RUN_PARAMS']['RUN_BLNOVERRIDE'])
     num_records = config['RUN_PARAMS']['RUN_NUM_RECORDS']
     num_runs = config['RUN_PARAMS']['RUN_NUM_RUNS']
     resume = eval(config['RUN_PARAMS']['RUN_RESUME'])
     backupSave = eval(config['RUN_PARAMS']['RUN_BACKUP'])
     num_logLine = 0 # Enumerate log lines for sorting purposes
-    path_output = config['PATH_PARAMS_HARVEST']['PATH_OUTPUT'] + "/" + config['PURE_PARAMS']['PURE_API_VERSION'] + "/" + config['PURE_PARAMS']['PURE_SYSTEM']
-    path_output_backup = config['PATH_PARAMS_HARVEST']['PATH_OUTPUT_BACKUP'] + "/" + config['PURE_PARAMS']['PURE_API_VERSION'] + "/" + config['PURE_PARAMS']['PURE_SYSTEM']
-    path_log = config['PATH_PARAMS_HARVEST']['PATH_LOG'] + "/" + config['PURE_PARAMS']['PURE_API_VERSION'] + "/" + config['PURE_PARAMS']['PURE_SYSTEM']
+    if blnOverridePath:
+        path_output = config['PATH_PARAMS_HARVEST']['PATH_OUTPUT']
+        path_output_backup = config['PATH_PARAMS_HARVEST']['PATH_OUTPUT_BACKUP']
+        path_log = config['PATH_PARAMS_HARVEST']['PATH_LOG']
+    else:
+        path_output = config['PATH_PARAMS_HARVEST']['PATH_OUTPUT'] + "/" + config['PURE_PARAMS']['PURE_API_VERSION'] + "/" + config['PURE_PARAMS']['PURE_SYSTEM']
+        path_output_backup = config['PATH_PARAMS_HARVEST']['PATH_OUTPUT_BACKUP'] + "/" + config['PURE_PARAMS']['PURE_API_VERSION'] + "/" + config['PURE_PARAMS']['PURE_SYSTEM']
+        path_log = config['PATH_PARAMS_HARVEST']['PATH_LOG'] + "/" + config['PURE_PARAMS']['PURE_API_VERSION'] + "/" + config['PURE_PARAMS']['PURE_SYSTEM']
     rendering = config['WS_PARAMS']['WS_RENDERING']
     fields = config['WS_PARAMS']['WS_FIELDS']
 
 
     # Save files yes/no, assign variables for proper saving
     save = blnSave
-    path_output = path_output + "/" + str(run_method) + "/" + fileType
-    path_output_backup = path_output_backup + "/" + str(run_method) + "/" + fileType
+    if not blnOverridePath:
+        path_output = path_output + "/" + str(run_method) + "/" + fileType
+        path_output_backup = path_output_backup + "/" + str(run_method) + "/" + fileType
     if not os.path.exists(path_output):
         os.makedirs(path_output)
-    path_log = path_log + "/" + str(run_method) + "/" + fileType + "/logs"
+    if blnOverridePath:
+        path_log = path_log + "/logs"
+    else:
+        path_log = path_log + "/" + str(run_method) + "/" + fileType + "/logs"
     if not os.path.exists(path_log):
         os.makedirs(path_log)
 
@@ -263,19 +274,27 @@ def get_site_contents(site):
         print(str(num_logLine) + "," + str(num_records) + ",,,,{0} ({1}): ".format(site['name'], site['url']) + "," + str(datetime.datetime.now()))
 
         for endpoint in endpoints:
+            # delete endpoint directories first
+            shutil.rmtree(path_output + "/" + endpoint.replace('/', '-'), ignore_errors=True)
+            if backupSave:
+                shutil.rmtree(path_output_backup + "/" + endpoint.replace('/', '-'), ignore_errors=True)
+            # get on with harvesting
             total = get_count(site, endpoint)
             num_logLine += 1
             print(str(num_logLine) + "," + str(num_records) + ",," + str(total) + ",{0}".format(endpoint) + ",START," + str(datetime.datetime.now()))
             # write text file to indicate start harvesting for <endpoint>, format yyyy-<endpoint>-start.text
             save_file(True, "start", path_output + "/" + endpoint.replace('/', '-'), "{0}_{1}_{2}".format("{:%Y%m%d}".format(datetime.datetime.now()),endpoint.replace('/', '-'), "start"), "txt")
+            if backupSave:
+                save_file(True, "start", path_output_backup + "/" + endpoint.replace('/', '-'), "{0}_{1}_{2}".format("{:%Y%m%d}".format(datetime.datetime.now()),endpoint.replace('/', '-'), "start"), "txt")
             harvest_endpoint(site, endpoint, total)
             # write text file to indicate end harvesting for <endpoint>, format yyyy_<endpoint>_start.text
             save_file(True, "end", path_output + "/" + endpoint.replace('/', '-'), "{0}_{1}_{2}".format("{:%Y%m%d}".format(datetime.datetime.now()),endpoint.replace('/', '-'), "end"), "txt")
+            if backupSave:
+                save_file(True, "end", path_output_backup + "/" + endpoint.replace('/', '-'), "{0}_{1}_{2}".format("{:%Y%m%d}".format(datetime.datetime.now()),endpoint.replace('/', '-'), "end"), "txt")
             num_logLine += 1
             print(str(num_logLine) + "," + str(num_records) + ",," + str(total) + ",{0}".format(endpoint) + ",STOP," + str(datetime.datetime.now()))
     except Exception as e:
         print(traceback.format_exc())
-
 
 # Harvests all content form an endpoint
 def harvest_endpoint(site, endpoint, total):

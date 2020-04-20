@@ -100,6 +100,12 @@ RUN_METHOD = <0 = use navigationlink to next record set as returned by webservic
 Example: RUN_METHOD = 0
 ````
 ````json
+RUN_BLNOVERRIDE = <True = skip adding PURE_PARAMS and WS_PARAMS to file path, False = add PURE_PARAMS and WS_PARAMS to file path>
+
+Example: RUN_BLNOVERRIDE = False
+````
+
+````json
 RUN_BLNSAVE = <True = save file to disk, False = do not save file>
 
 Example: RUN_BLNSAVE = True
@@ -142,14 +148,13 @@ The parameters listed here are base paths. At runtime they will be filled out wi
 - WS_FILETYPE
 - endpoint
 
-Therefore, considering the parameter examples listed above, the full filepath of the first research output file saved to disk will read
+**unless** the RUN parameter BLN_OVERRIDE is set to True.
+
+Therefore, when BLN_OVERRIDE is set to False, considering the parameter examples listed above, the full filepath of the first research output file saved to disk will read
 
 ````
 /home/harvest-pure/data/s/api/517/Staging/0/json/research-outputs/20200414_research-outputs_000000.json
 ````
-
-## Scheduling the script
-[TODO]
 
 ## Disclaimer
 I'm no python guru...so I started with basic knowledge, I searched the net and where I hit a wall I tried and failed until I got it working again, step by step. Please allow for code that won't win awards and feel free to share your suggestions for improvement.
