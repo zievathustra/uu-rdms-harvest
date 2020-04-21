@@ -167,9 +167,9 @@ List the currently active cron jobs in a terminal window using
 ```
 crontab -l
 ```
-An example cron job running daily at 17h00 could look like
+An example cron job running daily at 19h00 could look like
 ```
-0 17 * * * /usr/bin/python3.7 /home/sieve002/uu-rdms-harvest/harvest-pure.py
+0 19 * * * cd /home/sieve002/uu-rdms-harvest/ && /usr/bin/python3.7 /home/sieve002/uu-rdms-harvest/harvest-pure.py >> ~/harvest-pure-cron.log
 ```
 
 ### Windows (client, server)
