@@ -159,9 +159,9 @@ Therefore, when BLN_OVERRIDE is set to False, considering the parameter examples
 ## Scheduling
 
 ### Linux
-Use [crontab](https://tecadmin.net/crontab-in-linux-with-20-examples-of-cron-schedule/) to schedule a cron job to run the script at intervals. Define the crontab parameters in e text file and add the job to the cron list a terminal window as follows.
+Use [crontab](https://tecadmin.net/crontab-in-linux-with-20-examples-of-cron-schedule/) to schedule a cron job to run the script at intervals. Define the crontab parameters in a text file and add the job to the cron list a terminal window as follows. Please observe using sudo if the script needs to run with root privileges.
 ```
-crontab <filename>
+[sudo] crontab [-u username] <filename>
 ```
 List the currently active cron jobs in a terminal window using
 ```
