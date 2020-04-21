@@ -156,6 +156,38 @@ Therefore, when BLN_OVERRIDE is set to False, considering the parameter examples
 /home/harvest-pure/data/s/api/517/Staging/0/json/research-outputs/20200414_research-outputs_000000.json
 ````
 
+## Scheduling
+
+### Linux
+Use [crontab](https://tecadmin.net/crontab-in-linux-with-20-examples-of-cron-schedule/) to schedule a cron job to run the script at intervals. Define the crontab parameters in e text file and add the job to the cron list a terminal window as follows.
+```
+crontab <filename>
+```
+List the currently active cron jobs in a terminal window using
+```
+crontab -l
+```
+An example cron job running daily at 17h00 could look like
+```
+0 17 * * * /usr/bin/python3.7 /home/sieve002/uu-rdms-harvest/harvest-pure.py
+```
+
+### Windows (client, server)
+Use the Windows Task Scheduler to run the script at intervals on Windows machines. Configure authorisation and trigger(s) as you see fit. The action should be configured as follows:
+
+**Command**
+```
+<path to python executable>\python.exe
+```
+**Arguments**
+```
+harvest-pure.py
+```
+**Working directory**
+```
+<path to working directory = path to harvest-pure.py and harvest-pure.cfg>
+```
+
 ## Disclaimer
 I'm no python guru...so I started with basic knowledge, I searched the net and where I hit a wall I tried and failed until I got it working again, step by step. Please allow for code that won't win awards and feel free to share your suggestions for improvement.
 
