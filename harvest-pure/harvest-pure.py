@@ -5,6 +5,8 @@
 #                    https://doc.pure.elsevier.com/display/PureClient/Python+Examples#PythonExamples-PureWebService513Example
 # [SOURCE#2]       : Logger class for outputting print statements to file]
 #                    https://stackoverflow.com/questions/14906764/how-to-redirect-stdout-to-both-file-and-console-with-scripting/14906787
+# [SOURCE#3]       : Fix for not finding config file when running as cron job on Linux
+#                    https://stackoverflow.com/questions/18799671/crontab-python-script-execution-cant-find-settings-config-file
 # [AUTHOR]         : Arjan Sieverink, Utrecht University
 # [CONTACT#1]      : https://www.uu.nl/staff/JASieverink
 # [CONTACT#2]      : https://www.linkedin.com/in/arjansieverink
@@ -35,7 +37,9 @@ import json
 try:
     # Get handle to configuration file, must be located in same folder as .py file
     config = configparser.ConfigParser()
-    config.read('harvest-pure.cfg')
+    scriptDirectory = os.path.dirname(os.path.realpath(__file__))
+    settingsFilePath = os.path.join(scriptDirectory, "harvest-pure.cfg")
+    config.readfp(settingsFilePath,"r")
 
     # Threading - 1 thread per site
     from multiprocessing.dummy import Pool as ThreadPool
