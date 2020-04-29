@@ -65,6 +65,7 @@ try:
         path_log = config['PATH_PARAMS_HARVEST']['PATH_LOG'] + "/" + config['PURE_PARAMS']['PURE_API_VERSION'] + "/" + config['PURE_PARAMS']['PURE_SYSTEM']
     rendering = config['WS_PARAMS']['WS_RENDERING']
     fields = config['WS_PARAMS']['WS_FIELDS']
+    blnSuccess = True
 
 
     # Save files yes/no, assign variables for proper saving
@@ -253,6 +254,7 @@ sys.stdout = Logger()
 
 def main():
     try:
+        global blnSuccess
         global num_logLine
         num_logLine += 1
         print(str(num_logLine) + "," + str(num_records) + ",,,,START," + str(datetime.datetime.now()))
@@ -264,11 +266,13 @@ def main():
         num_logLine += 1
         print(str(num_logLine) + "," + str(num_records) + ",,,,STOP," + str(datetime.datetime.now()))
     except Exception as e:
-         print(traceback.format_exc())
+        blnSuccess = False
+        print(traceback.format_exc())
     quit()
 
 def get_site_contents(site):
     try:
+        global blnSuccess
         global num_logLine
         num_logLine += 1
         print(str(num_logLine) + "," + str(num_records) + ",,,,{0} ({1}): ".format(site['name'], site['url']) + "," + str(datetime.datetime.now()))
@@ -287,19 +291,21 @@ def get_site_contents(site):
             if backupSave:
                 save_file(True, "start", path_output_backup + "/" + endpoint.replace('/', '-'), "{0}_{1}_{2}".format("{:%Y%m%d}".format(datetime.datetime.now()),endpoint.replace('/', '-'), "start"), "txt")
             harvest_endpoint(site, endpoint, total)
-            # write text file to indicate end harvesting for <endpoint>, format yyyy_<endpoint>_start.text
-            save_file(True, "end", path_output + "/" + endpoint.replace('/', '-'), "{0}_{1}_{2}".format("{:%Y%m%d}".format(datetime.datetime.now()),endpoint.replace('/', '-'), "end"), "txt")
-            if backupSave:
-                save_file(True, "end", path_output_backup + "/" + endpoint.replace('/', '-'), "{0}_{1}_{2}".format("{:%Y%m%d}".format(datetime.datetime.now()),endpoint.replace('/', '-'), "end"), "txt")
-            num_logLine += 1
-            print(str(num_logLine) + "," + str(num_records) + ",," + str(total) + ",{0}".format(endpoint) + ",STOP," + str(datetime.datetime.now()))
+            if blnSuccess:
+                # write text file to indicate end harvesting for <endpoint>, format yyyy_<endpoint>_start.text
+                save_file(True, "end", path_output + "/" + endpoint.replace('/', '-'), "{0}_{1}_{2}".format("{:%Y%m%d}".format(datetime.datetime.now()),endpoint.replace('/', '-'), "end"), "txt")
+                if backupSave:
+                    save_file(True, "end", path_output_backup + "/" + endpoint.replace('/', '-'), "{0}_{1}_{2}".format("{:%Y%m%d}".format(datetime.datetime.now()),endpoint.replace('/', '-'), "end"), "txt")
+                num_logLine += 1
+                print(str(num_logLine) + "," + str(num_records) + ",," + str(total) + ",{0}".format(endpoint) + ",STOP," + str(datetime.datetime.now()))
     except Exception as e:
+        blnSuccess = False
         print(traceback.format_exc())
 
 # Harvests all content form an endpoint
 def harvest_endpoint(site, endpoint, total):
     try:
-
+        global blnSuccess
         # set log line number
         global num_logLine
 
@@ -393,6 +399,7 @@ def harvest_endpoint(site, endpoint, total):
                     more_records = False
 
     except Exception as e:
+        blnSuccess = False
         print(traceback.format_exc())
 
 # Gets the latest offset for output files
@@ -400,6 +407,8 @@ def harvest_endpoint(site, endpoint, total):
 # Note: os,walk does not seem to work properly on Linux, further troubleshooting needed
 def get_latest_offset(site, endpoint):
     try:
+        global blnSuccess
+        blnSuccess = True
         ep_files = []
         maximum = 0
         for root, dirs, files in os.walk(path_output + "/"):
@@ -411,21 +420,27 @@ def get_latest_offset(site, endpoint):
                 maximum = max(idx, maximum)
         return maximum
     except Exception as e:
+        blnSuccess = False
         print(traceback.format_exc())
 
 # Get accept and api-key headers
 def get_headers(site):
     try:
+        global blnSuccess
+        blnSuccess = True
         return {
             "Accept": output,
             "api-key": site['api-key']
         }
     except Exception as e:
+        blnSuccess = False
         print(traceback.format_exc())
 
 # Get total number of records in endpoint
 def get_count(site, endpoint):
     try:
+        global blnSuccess
+        blnSuccess = True
         req = request(init_url(site['url'], endpoint, False), get_headers(site), {'pageSize': 1})
         if output == 'application/json':
             req_dict = json.loads(req.text)
@@ -439,31 +454,40 @@ def get_count(site, endpoint):
 
         return 0
     except Exception as e:
-       print(traceback.format_exc())
+        blnSuccess = False
+        print(traceback.format_exc())
 
 
 # add parameters and init URL
 def init_url(url, endpoint, getParams):
     try:
+        global blnSuccess
+        blnSuccess = True
         if getParams: # We need different uri's for getting the count and looping through the record set
             parameters = urllib.parse.urlencode(get_endpoint_parameters(endpoint), doseq=True)
             return "{0}/{1}/{2}?{3}".format(url, api_version, endpoint, parameters)
         return "{0}/{1}/{2}?{3}".format(url, api_version, endpoint, {})
     except Exception as e:
+        blnSuccess = False
         print(traceback.format_exc())
 
 # Get content-specific parameters, if any, e.g. renderings, orderBy...
 def get_endpoint_parameters(endpoint):
     try:
+        global blnSuccess
+        blnSuccess = True
         if endpoint in content_parameters:
             return content_parameters[endpoint]
         return {}
     except Exception as e:
+        blnSuccess = False
         print(traceback.format_exc())
 
 # Save results to file
 def save_file(blnTextOnly, response, folder, name, fileType):
     try:
+        global blnSuccess
+        blnSuccess = True
         if not os.path.exists(folder):
             os.makedirs(folder)
 
@@ -476,23 +500,30 @@ def save_file(blnTextOnly, response, folder, name, fileType):
                 for chunk in response.iter_content(1024):
                     file.write(chunk)
     except Exception as e:
+        blnSuccess = False
         print(traceback.format_exc())
 
 # Get page offset in the URL
 def get_offset(url):
     try:
+        global blnSuccess
+        blnSuccess = True
         q = parse_qs(urlparse(url).query)
         if 'offset' in q:
             return q['offset'][0]
         return 0
     except Exception as e:
+        blnSuccess = False
         print(traceback.format_exc())
 
 # Make HTTP request
 def request(url, headers = {}, parameters = {}):
     try:
+        global blnSuccess
+        blnSuccess = True
         return requests.get(url, parameters, headers = headers, verify = False)
     except Exception as e:
+        blnSuccess = False
         print(traceback.format_exc())
 
 # Call to main
